@@ -8,7 +8,7 @@ class SQLHelper {
   SQLHelper._();
   static final SQLHelper singleInstance = SQLHelper._();
   Database? _database;
-  String EXPENSE_DATABASE = 'expense.db';
+  // String EXPENSE_DATABASE = 'expense.db';
   // String USER_TABLE = 'users';
   // String USER_ID = 'id';
   // String USER_NAME = 'name';
@@ -35,7 +35,7 @@ class SQLHelper {
 
   Future<Database> initDB() async {
     String path = join(await getDatabasesPath(), 'expense.db');
-    return openDatabase(path, version: 1, onCreate: _onCreate);
+    return await openDatabase(path, version: 1, onCreate: _onCreate);
   }
 
   ///===basically it creates database schema===///
@@ -45,10 +45,11 @@ class SQLHelper {
      CREATE TABLE users (
      id INTEGER PRIMARY KEY AUTOINCREMENT,
      name TEXT,
-    phone TEXT,
-    email TEXT,
-    password TEXT,
-    city TEXT )
+     phone TEXT,
+     email TEXT,
+     password TEXT,
+    city TEXT
+    )
 
      ''');
     print('user table created here');
