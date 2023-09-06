@@ -23,9 +23,9 @@ class _SplashPageState extends State<SplashPage> {
   // retrieving the value from SharedPreferences
   void takeMeWhere() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool? isLoggedIn = prefs.getBool('isLoggedIn');
+    bool? isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
     Timer(const Duration(seconds: 3), () {
-      if (isLoggedIn == null || isLoggedIn == false) {
+      if (isLoggedIn == false) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(

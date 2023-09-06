@@ -4,6 +4,11 @@ import 'package:flutter/material.dart';
 class Utils {
   static ThemeData myLightTheme() {
     return ThemeData(
+      appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          titleTextStyle: TextStyle(color: CupertinoColors.label, fontSize: 18),
+          centerTitle: true),
       inputDecorationTheme: InputDecorationTheme(
         focusedBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: CupertinoColors.destructiveRed)),
@@ -18,6 +23,19 @@ class Utils {
   }
 
   static ThemeData myDarkTheme() {
-    return ThemeData();
+    return ThemeData(
+      appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.black,
+          elevation: 0,
+          titleTextStyle:
+              TextStyle(color: CupertinoColors.systemPurple, fontSize: 18),
+          centerTitle: true),
+      listTileTheme: ListTileThemeData(
+          tileColor: Colors.grey.shade700.withOpacity(.13),
+          leadingAndTrailingTextStyle: TextStyle(
+            color: Colors.purple.shade600,
+            fontSize: 15,
+          )),
+    );
   }
 }

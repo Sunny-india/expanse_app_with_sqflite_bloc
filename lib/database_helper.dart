@@ -9,8 +9,8 @@ class SQLHelper {
   static final SQLHelper singleInstance = SQLHelper._();
   Database? _database;
   // String EXPENSE_DATABASE = 'expense.db';
-  // String USER_TABLE = 'users';
-  // String USER_ID = 'id';
+  String USER_TABLE = 'users';
+  String USER_ID = 'id';
   // String USER_NAME = 'name';
   // String USER_PHONE = 'phone';
   // String USER_EMAIL = 'email';
@@ -42,7 +42,7 @@ class SQLHelper {
   Future _onCreate(Database db, version) async {
     //
     await db.execute('''
-     CREATE TABLE users (
+     CREATE TABLE $USER_TABLE (
      id INTEGER PRIMARY KEY AUTOINCREMENT,
      name TEXT,
      phone TEXT,
@@ -69,7 +69,7 @@ class SQLHelper {
 
   Future addUser(Users user) async {
     Database db = await getDB();
-    int added = await db.insert('users', user.toUserTable());
+    int added = await db.insert(USER_TABLE, user.toUserTable());
     if (added > 0) {
       print(await db.query('users'));
 
@@ -79,5 +79,14 @@ class SQLHelper {
     } else {
       print('Not Added');
     }
+  }
+
+  Future<List<Users>> fetchUsers() async {
+    Database db = await getDB();
+    List<Map<String, dynamic>> listOfMaps = await db.query(USER_TABLE);
+    return List.generate(listOfMaps.length, (index) {
+      Map<String, dynamic> eachUser = listOfMaps[index];
+      return Users.fromUserTable(eachUser);
+    });
   }
 }
