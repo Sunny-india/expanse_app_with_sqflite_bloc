@@ -8,25 +8,30 @@ class SQLHelper {
   SQLHelper._();
   static final SQLHelper singleInstance = SQLHelper._();
   Database? _database;
-  // String EXPENSE_DATABASE = 'expense.db';
-  String USER_TABLE = 'users';
-  String USER_ID = 'id';
-  // String USER_NAME = 'name';
-  // String USER_PHONE = 'phone';
-  // String USER_EMAIL = 'email';
+  static String USER_TABLE = 'users';
+  static String USER_ID = 'id';
+  static String USER_NAME = 'name';
+  static String USER_PHONE = 'phone';
+  static String USER_EMAIL = 'email';
   //
-  // String USER_PASSWORD = 'password';
-  // String USER_CITY = 'city';
+  static String USER_PASSWORD = 'password';
+  static String USER_CITY = 'city';
 
-  // String EXPANSE_TABLE = 'expanses';
-  // String EXPANSE_ID = 'expanse_id';
-  // String EXPANSE_AMOUNT = 'amount';
-  // String EXPANSE_TIME = 'time_of_expanse';
-  // String EXPANSE_TOTAL = 'total_amount_of_expanse';
+  static String EXPANSE_TABLE = 'expanses';
+  static String EXPANSE_ID = 'expanse_id';
+  static String EXPANSE_TITLE = 'expanse_title';
+  static String EXPANSE_DESC = 'expanse_desc';
 
-  Future getDB() async {
+  static String EXPANSE_AMOUNT = 'expanse_amount';
+  static String EXPANSE_TOTAL = 'expanse_total';
+  // 0 for debit, 1 for credit type. Will accept boolean in it
+  static String EXPANSE_TYPE = 'expanse_type';
+  static String EXPANSE_CAT_ID = 'expanse_cat_id';
+  static String EXPANSE_TIME = 'expanse_time';
+
+  Future<Database> getDB() async {
     if (_database != null) {
-      return _database;
+      return _database!;
     } else {
       print('database created for the first time');
       return _database = await initDB();
@@ -43,42 +48,66 @@ class SQLHelper {
     //
     await db.execute('''
      CREATE TABLE $USER_TABLE (
-     id INTEGER PRIMARY KEY AUTOINCREMENT,
-     name TEXT,
-     phone TEXT,
-     email TEXT,
-     password TEXT,
-    city TEXT
+     $USER_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+     $USER_NAME TEXT,
+     $USER_PHONE TEXT,
+     $USER_EMAIL TEXT,
+     $USER_PASSWORD TEXT,
+    $USER_CITY TEXT
     )
 
      ''');
     print('user table created here');
     //
-    // await db.execute('''
-    // CREATE TABLE $EXPANSE_TABLE (
-    // $EXPANSE_ID INTEGER PRIMARY KEY,
-    // $EXPANSE_AMOUNT REAL NOT NULL,
-    // $EXPANSE_TIME TEXT NOT NULL,
-    // $EXPANSE_TOTAL REAL,
-    // $USER_ID INTEGER,
-    // FOREIGN KEY ($USER_ID) REFERENCES $USER_TABLE($USER_ID)
-    // )
-    // ''');
-    // print('EXPANSE table created here');
+    await db.execute('''
+    CREATE TABLE $EXPANSE_TABLE (
+    $EXPANSE_ID INTEGER PRIMARY KEY AUTOINCREMENT, 
+    $USER_ID INTEGER,
+    $EXPANSE_TITLE TEXT,
+    $EXPANSE_DESC TEXT,
+    $EXPANSE_AMOUNT REAL,
+    $EXPANSE_TOTAL REAL,
+    $EXPANSE_TYPE INTEGER,
+    $EXPANSE_TIME TEXT,
+    $EXPANSE_CAT_ID INTEGER    
+    )
+    ''');
+
+    print('EXPANSE table created here');
   }
 
   Future addUser(Users user) async {
     Database db = await getDB();
-    int added = await db.insert(USER_TABLE, user.toUserTable());
-    if (added > 0) {
-      print(await db.query('users'));
+    bool checkExistence =
+        await userAlreadyExistedOrNot(email: user.email, phone: user.phone);
+    if (checkExistence == false) {
+      int added = await db.insert(USER_TABLE, user.toUserTable());
+      if (added > 0) {
+        print(await db.query('users'));
 
-      SharedPreferences prefs = await SharedPreferences.getInstance();
+        SharedPreferences prefs = await SharedPreferences.getInstance();
 
-      await prefs.setBool('isLoggedIn', true);
-    } else {
-      print('Not Added');
+        await prefs.setBool('isLoggedIn', true);
+      } else {
+        print('Not Added');
+      }
     }
+  }
+
+  Future<bool> userAlreadyExistedOrNot({String? email, String? phone}) async {
+    Database db = await getDB();
+    List<Map<String, dynamic>> dataCheck = await db.query(USER_TABLE,
+        where: '$USER_EMAIL =? OR $USER_PHONE = ?', whereArgs: [email, phone]);
+    return dataCheck.isNotEmpty;
+  }
+
+  Future<bool> authenticateUser(
+      {required String email, required String password}) async {
+    Database db = await getDB();
+    List<Map<String, dynamic>> emailPassword = await db.query(USER_TABLE,
+        where: '$USER_EMAIL = ? and $USER_PASSWORD',
+        whereArgs: [email, password]);
+    return emailPassword.isNotEmpty;
   }
 
   Future<List<Users>> fetchUsers() async {
