@@ -9,7 +9,7 @@ class SQLHelper {
   static final SQLHelper singleInstance = SQLHelper._();
   Database? _database;
   static String USER_TABLE = 'users';
-  static String USER_ID = 'id';
+  static String USER_ID = 'user_id';
   static String USER_NAME = 'name';
   static String USER_PHONE = 'phone';
   static String USER_EMAIL = 'email';
@@ -101,6 +101,7 @@ class SQLHelper {
     return dataCheck.isNotEmpty;
   }
 
+  // for sign up method
   Future<bool> authenticateUser(
       {required String email, required String password}) async {
     Database db = await getDB();
@@ -116,6 +117,29 @@ class SQLHelper {
     return List.generate(listOfMaps.length, (index) {
       Map<String, dynamic> eachUser = listOfMaps[index];
       return Users.fromUserTable(eachUser);
+    });
+  }
+
+  ///===Expanse Table Operations are below===///
+
+  Future<int> addExpanse(Expanse newExpanse) async {
+    Database db = await getDB();
+    int added = await db.insert(EXPANSE_TABLE, newExpanse.toMap());
+    if (added > 0) {
+      print(await db.query(EXPANSE_TABLE));
+    } else {
+      print('Expanse not added');
+    }
+    return added;
+  }
+
+  Future<List<Expanse>> fetchAllExpansesOfUser(int id) async {
+    Database db = await getDB();
+    List<Map<String, dynamic>> listOfMaps =
+        await db.query(EXPANSE_TABLE, where: '$USER_ID =?', whereArgs: [id]);
+    return List.generate(listOfMaps.length, (index) {
+      Map<String, dynamic> singleMap = listOfMaps[index];
+      return Expanse.fromMap(singleMap);
     });
   }
 }
