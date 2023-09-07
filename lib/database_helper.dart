@@ -2,6 +2,7 @@ import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
+import 'models/expanse_model.dart';
 import 'models/users_model.dart';
 
 class SQLHelper {
@@ -86,7 +87,6 @@ class SQLHelper {
         print(await db.query('users'));
 
         SharedPreferences prefs = await SharedPreferences.getInstance();
-
         await prefs.setBool('isLoggedIn', true);
       } else {
         print('Not Added');
@@ -108,6 +108,13 @@ class SQLHelper {
     List<Map<String, dynamic>> emailPassword = await db.query(USER_TABLE,
         where: '$USER_EMAIL = ? and $USER_PASSWORD',
         whereArgs: [email, password]);
+
+    // set uid by sharedPrefs here
+    if (emailPassword.isNotEmpty) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setInt('uid', emailPassword[0][USER_ID]);
+    }
+    //  done
     return emailPassword.isNotEmpty;
   }
 
@@ -116,30 +123,44 @@ class SQLHelper {
     List<Map<String, dynamic>> listOfMaps = await db.query(USER_TABLE);
     return List.generate(listOfMaps.length, (index) {
       Map<String, dynamic> eachUser = listOfMaps[index];
+
       return Users.fromUserTable(eachUser);
     });
   }
 
   ///===Expanse Table Operations are below===///
 
-  Future<int> addExpanse(Expanse newExpanse) async {
+  Future<bool> addExpanse(Expanse newExpanse) async {
     Database db = await getDB();
     int added = await db.insert(EXPANSE_TABLE, newExpanse.toMap());
-    if (added > 0) {
-      print(await db.query(EXPANSE_TABLE));
-    } else {
-      print('Expanse not added');
-    }
-    return added;
+
+    print(await db.query(EXPANSE_TABLE));
+    return added > 0;
   }
 
-  Future<List<Expanse>> fetchAllExpansesOfUser(int id) async {
+  Future<List<Expanse>> fetchUserBasedAllExpanses(int uid) async {
     Database db = await getDB();
+
+    // get uid by SharedPreference method here, for its use further
+    // in Bloc. set task has been done in users function.
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? uid = prefs.getInt('uid');
+    //
+
     List<Map<String, dynamic>> listOfMaps =
-        await db.query(EXPANSE_TABLE, where: '$USER_ID =?', whereArgs: [id]);
+        await db.query(EXPANSE_TABLE, where: '$USER_ID =?', whereArgs: [uid]);
     return List.generate(listOfMaps.length, (index) {
       Map<String, dynamic> singleMap = listOfMaps[index];
       return Expanse.fromMap(singleMap);
+    });
+  }
+
+  Future<List<Expanse>> fetchAllExpanses() async {
+    Database db = await getDB();
+    List<Map<String, dynamic>> listOfMaps = await db.query(EXPANSE_TABLE);
+    return List.generate(listOfMaps.length, (index) {
+      Map<String, dynamic> eachMap = listOfMaps[index];
+      return Expanse.fromMap(eachMap);
     });
   }
 }

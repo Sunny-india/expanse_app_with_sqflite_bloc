@@ -33,16 +33,29 @@ class _FirstPageState extends State<FirstPage> {
         title: const Text('List Of Users'),
       ),
       body: SafeArea(
-          child: ListView.builder(
-              itemCount: allUsers.length,
-              itemBuilder: (context, index) {
-                Users user = allUsers[index];
-                return Card(
-                  child: ListTile(
-                    leading: Text(user.name.toString()),
+        child: ListView.builder(
+            itemCount: allUsers.length,
+            itemBuilder: (context, index) {
+              Users user = allUsers[index];
+              return Card(
+                child: ListTile(
+                  leading: Text(user.user_id.toString()),
+                  title: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(user.name.toString()),
+                      const SizedBox(height: 15),
+                      Text(user.email.toString()),
+                      const SizedBox(height: 5),
+                      Text(user.phone.toString()),
+                      const SizedBox(height: 5),
+                      Text(user.city.toString()),
+                    ],
                   ),
-                );
-              })),
+                ),
+              );
+            }),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
         child: const Icon(Icons.attach_money),

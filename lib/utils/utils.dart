@@ -31,11 +31,17 @@ class Utils {
               TextStyle(color: CupertinoColors.systemPurple, fontSize: 18),
           centerTitle: true),
       listTileTheme: ListTileThemeData(
-          tileColor: Colors.grey.shade700.withOpacity(.13),
-          leadingAndTrailingTextStyle: TextStyle(
-            color: Colors.purple.shade600,
-            fontSize: 15,
-          )),
+        minLeadingWidth: 20,
+        tileColor: Colors.grey.shade700.withOpacity(.13),
+        leadingAndTrailingTextStyle: TextStyle(
+          color: Colors.purple.shade600,
+          fontSize: 15,
+        ),
+        titleTextStyle: TextStyle(
+          color: Colors.purple.shade600,
+          fontSize: 15,
+        ),
+      ),
     );
   }
 }
