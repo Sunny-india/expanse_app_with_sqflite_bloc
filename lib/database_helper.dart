@@ -138,26 +138,31 @@ class SQLHelper {
     return added > 0;
   }
 
-  Future<List<Expanse>> fetchUserBasedAllExpanses(int uid) async {
-    Database db = await getDB();
+  // Future<List<Expanse>> fetchUserBasedAllExpanses(int uid) async {
+  //   Database db = await getDB();
+  //
+  //   // get uid by SharedPreference method here, for its use further
+  //   // in Bloc. set task has been done in users function.
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   int? uid = prefs.getInt('uid');
+  //   //
+  //   List<Map<String, dynamic>> listOfMaps =
+  //       await db.query(EXPANSE_TABLE, where: '$USER_ID =?', whereArgs: [uid]);
+  //   return List.generate(listOfMaps.length, (index) {
+  //     Map<String, dynamic> singleMap = listOfMaps[index];
+  //     return Expanse.fromMap(singleMap);
+  //   });
+  // }
 
+  Future<List<Expanse>> fetchAllExpanses() async {
+    Database db = await getDB();
     // get uid by SharedPreference method here, for its use further
     // in Bloc. set task has been done in users function.
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int? uid = prefs.getInt('uid');
     //
-
     List<Map<String, dynamic>> listOfMaps =
-        await db.query(EXPANSE_TABLE, where: '$USER_ID =?', whereArgs: [uid]);
-    return List.generate(listOfMaps.length, (index) {
-      Map<String, dynamic> singleMap = listOfMaps[index];
-      return Expanse.fromMap(singleMap);
-    });
-  }
-
-  Future<List<Expanse>> fetchAllExpanses() async {
-    Database db = await getDB();
-    List<Map<String, dynamic>> listOfMaps = await db.query(EXPANSE_TABLE);
+        await db.query(EXPANSE_TABLE, where: '$USER_ID = ?', whereArgs: [uid]);
     return List.generate(listOfMaps.length, (index) {
       Map<String, dynamic> eachMap = listOfMaps[index];
       return Expanse.fromMap(eachMap);

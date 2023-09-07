@@ -9,18 +9,31 @@ import 'expanse_event.dart';
 class ExpanseBloc extends Bloc<ExpanseEvent, ExpanseState> {
   SQLHelper db;
   ExpanseBloc({required this.db}) : super(ExpanseInitialState()) {
+    /// when you add expanses
     on<AddExpanseEvent>((event, emit) async {
       emit(ExpanseLoadingState());
       await db.addExpanse(event.expanse);
-      // get uid from shared preferences here, for use
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      int? uid = prefs.getInt('uid');
-      // done
-      List<Expanse> innerExp = await db.fetchUserBasedAllExpanses(uid!);
+
+      List<Expanse> innerExp = await db.fetchAllExpanses();
+
       if (innerExp.isNotEmpty) {
         emit(ExpanseLoadedState(listOfExp: innerExp));
       } else {
         emit(ExpanseErrorState(errorMessage: 'Expanse Not added'));
+      }
+    });
+
+    /// to fetch all expanses based on individual user,
+    on<FetchAllExpanseEvent>((event, emit) async {
+      emit(ExpanseLoadingState());
+      //todo: to fetch expanse based on UserId
+      //await db.fetchUserBasedAllExpanses(uid);
+      List<Expanse> allExp = await db.fetchAllExpanses();
+      if (allExp.isNotEmpty) {
+        emit(ExpanseLoadedState(listOfExp: allExp));
+      } else {
+        emit(ExpanseErrorState(
+            errorMessage: 'Could not fetch through bloc-state'));
       }
     });
   }
