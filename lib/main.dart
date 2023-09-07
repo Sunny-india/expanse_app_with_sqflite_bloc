@@ -9,7 +9,7 @@ void main() async {
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.light,
       theme: Utils.myLightTheme(),
       darkTheme: Utils.myDarkTheme(),
       home: const SplashPage(),

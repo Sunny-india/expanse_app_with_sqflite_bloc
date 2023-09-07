@@ -1,4 +1,5 @@
 import 'package:expanse_app_with_sqflite_bloc/database_helper.dart';
+import 'package:expanse_app_with_sqflite_bloc/utils/add_expanse_page.dart';
 import 'package:flutter/material.dart';
 
 import 'models/users_model.dart';
@@ -57,7 +58,11 @@ class _FirstPageState extends State<FirstPage> {
             }),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return const AddExpansePage();
+          }));
+        },
         child: const Icon(Icons.attach_money),
       ),
     );

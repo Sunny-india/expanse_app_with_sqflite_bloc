@@ -19,6 +19,21 @@ class Utils {
           borderRadius: BorderRadius.circular(12),
         ),
       ),
+      listTileTheme: ListTileThemeData(
+        minLeadingWidth: 20,
+        tileColor: Colors.lightBlue.withOpacity(.34),
+        leadingAndTrailingTextStyle: const TextStyle(
+          color: Colors.indigo,
+          fontSize: 15,
+        ),
+        titleTextStyle: TextStyle(
+          color: Colors.indigo.shade600,
+          fontSize: 15,
+        ),
+      ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: Colors.lightBlue.withOpacity(.34),
+          foregroundColor: Colors.indigo),
     );
   }
 

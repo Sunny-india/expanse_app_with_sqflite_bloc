@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:expanse_app_with_sqflite_bloc/utils/image_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -45,12 +46,13 @@ class _SplashPageState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
-    return const Material(
+    return Material(
       child: Scaffold(
         body: SafeArea(
             child: Center(
-          child: Text(
-              'within 2 seconds, you would be taken to your page, depending upon you are logged in or not'),
+          child: CircleAvatar(
+            child: Image.asset(ImageConstants.appLogo),
+          ),
         )),
       ),
     );
