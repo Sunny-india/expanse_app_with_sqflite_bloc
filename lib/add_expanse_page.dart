@@ -1,4 +1,6 @@
+import 'package:expanse_app_with_sqflite_bloc/utils/app_constants.dart';
 import 'package:expanse_app_with_sqflite_bloc/utils/my_styles.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'login_page.dart';
 
@@ -95,7 +97,43 @@ class _AddExpansePageState extends State<AddExpansePage> {
 
                     /// button for entries
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        showModalBottomSheet(
+                            constraints: BoxConstraints(
+                                maxHeight:
+                                    MediaQuery.sizeOf(context).height * .45),
+                            backgroundColor: CupertinoColors.activeOrange,
+                            // shape: const CircleBorder(
+                            //     side: BorderSide(
+                            //         color: CupertinoColors.black, width: 3)),
+                            context: context,
+                            builder: (context) {
+                              return Container(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 20),
+                                child: GridView.builder(
+                                    gridDelegate:
+                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: 3),
+                                    itemCount: AppConstants.categories.length,
+                                    itemBuilder: (context, index) {
+                                      Map<String, dynamic> inSideCategoryMap =
+                                          AppConstants.categories[index];
+                                      return Column(
+                                        children: [
+                                          Image.asset(
+                                            inSideCategoryMap['imagepath'],
+                                            width: 50,
+                                            height: 50,
+                                          ),
+                                          hSpacer(mHeight: 4),
+                                          Text(inSideCategoryMap['name']),
+                                        ],
+                                      );
+                                    }),
+                              );
+                            });
+                      },
                       child: const Text('Submit Expanse'),
                     ),
                   ],
