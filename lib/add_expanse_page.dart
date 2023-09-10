@@ -15,6 +15,42 @@ class _AddExpansePageState extends State<AddExpansePage> {
   TextEditingController titleController = TextEditingController();
   TextEditingController descController = TextEditingController();
   TextEditingController amountController = TextEditingController();
+
+  showBottomSheet() {
+    showModalBottomSheet(
+        constraints:
+            BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * .45),
+        backgroundColor: CupertinoColors.activeOrange,
+        // shape: const CircleBorder(
+        //     side: BorderSide(
+        //         color: CupertinoColors.black, width: 3)),
+        context: context,
+        builder: (context) {
+          return Container(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3),
+                itemCount: AppConstants.categories.length,
+                itemBuilder: (context, index) {
+                  Map<String, dynamic> inSideCategoryMap =
+                      AppConstants.categories[index];
+                  return Column(
+                    children: [
+                      Image.asset(
+                        inSideCategoryMap['imagepath'],
+                        width: 50,
+                        height: 50,
+                      ),
+                      hSpacer(mHeight: 4),
+                      Text(inSideCategoryMap['name']),
+                    ],
+                  );
+                }),
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -96,45 +132,24 @@ class _AddExpansePageState extends State<AddExpansePage> {
                     hSpacer(mHeight: 50),
 
                     /// button for entries
-                    ElevatedButton(
-                      onPressed: () {
-                        showModalBottomSheet(
-                            constraints: BoxConstraints(
-                                maxHeight:
-                                    MediaQuery.sizeOf(context).height * .45),
-                            backgroundColor: CupertinoColors.activeOrange,
-                            // shape: const CircleBorder(
-                            //     side: BorderSide(
-                            //         color: CupertinoColors.black, width: 3)),
-                            context: context,
-                            builder: (context) {
-                              return Container(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 20),
-                                child: GridView.builder(
-                                    gridDelegate:
-                                        const SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisCount: 3),
-                                    itemCount: AppConstants.categories.length,
-                                    itemBuilder: (context, index) {
-                                      Map<String, dynamic> inSideCategoryMap =
-                                          AppConstants.categories[index];
-                                      return Column(
-                                        children: [
-                                          Image.asset(
-                                            inSideCategoryMap['imagepath'],
-                                            width: 50,
-                                            height: 50,
-                                          ),
-                                          hSpacer(mHeight: 4),
-                                          Text(inSideCategoryMap['name']),
-                                        ],
-                                      );
-                                    }),
-                              );
-                            });
-                      },
-                      child: const Text('Submit Expanse'),
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: ElevatedButton(
+                            onPressed: showBottomSheet,
+                            child: const Text('Categories'),
+                          ),
+                        ),
+                        wSpacer(),
+                        Expanded(
+                          flex: 1,
+                          child: ElevatedButton(
+                            onPressed: () {},
+                            child: const Text('Enter'),
+                          ),
+                        )
+                      ],
                     ),
                   ],
                 ),
