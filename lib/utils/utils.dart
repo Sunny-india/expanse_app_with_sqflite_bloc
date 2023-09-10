@@ -1,14 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'color_constants.dart';
+
 class Utils {
   static ThemeData myLightTheme() {
     return ThemeData(
+      scaffoldBackgroundColor: ColorConstants.mainGreyColor,
       appBarTheme: const AppBarTheme(
           backgroundColor: Colors.transparent,
           elevation: 0,
-          titleTextStyle: TextStyle(color: CupertinoColors.label, fontSize: 18),
-          centerTitle: true),
+          titleTextStyle: TextStyle(
+            color: ColorConstants.mainBlackColor,
+            fontSize: 18,
+          ),
+          centerTitle: false),
       inputDecorationTheme: InputDecorationTheme(
         focusedBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: CupertinoColors.destructiveRed)),
@@ -39,12 +45,13 @@ class Utils {
 
   static ThemeData myDarkTheme() {
     return ThemeData(
+      //    scaffoldBackgroundColor: Colors.black12,
       appBarTheme: const AppBarTheme(
           backgroundColor: Colors.black,
           elevation: 0,
           titleTextStyle:
               TextStyle(color: CupertinoColors.systemPurple, fontSize: 18),
-          centerTitle: true),
+          centerTitle: false),
       listTileTheme: ListTileThemeData(
         minLeadingWidth: 20,
         tileColor: Colors.grey.shade700.withOpacity(.13),

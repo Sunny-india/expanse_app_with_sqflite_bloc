@@ -36,7 +36,7 @@ class Expanse {
 
   Map<String, dynamic> toMap() {
     return {
-      SQLHelper.EXPANSE_ID: expanse_id,
+      //  SQLHelper.EXPANSE_ID: expanse_id,
       SQLHelper.USER_ID: user_id,
       SQLHelper.EXPANSE_TITLE: expanse_title,
       SQLHelper.EXPANSE_DESC: expanse_desc,

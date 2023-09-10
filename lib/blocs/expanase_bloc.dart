@@ -1,6 +1,5 @@
 import 'package:expanse_app_with_sqflite_bloc/blocs/expanse_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../database_helper.dart';
 import '../models/expanse_model.dart';
@@ -12,14 +11,12 @@ class ExpanseBloc extends Bloc<ExpanseEvent, ExpanseState> {
     /// when you add expanses
     on<AddExpanseEvent>((event, emit) async {
       emit(ExpanseLoadingState());
-      await db.addExpanse(event.expanse);
-
-      List<Expanse> innerExp = await db.fetchAllExpanses();
-
-      if (innerExp.isNotEmpty) {
+      bool check = await db.addExpanse(event.expanse);
+      if (check) {
+        List<Expanse> innerExp = await db.fetchAllExpanses();
         emit(ExpanseLoadedState(listOfExp: innerExp));
       } else {
-        emit(ExpanseErrorState(errorMessage: 'Expanse Not added'));
+        emit(ExpanseErrorState(errorMessage: 'Expanse Not Added..!'));
       }
     });
 

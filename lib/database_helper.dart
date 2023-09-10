@@ -79,8 +79,8 @@ class SQLHelper {
 
   Future addUser(Users user) async {
     Database db = await getDB();
-    bool checkExistence =
-        await userAlreadyExistedOrNot(email: user.email, phone: user.phone);
+    bool checkExistence = await userAlreadyExistedOrNot(
+        email: user.email.toString(), phone: user.phone.toString());
     if (checkExistence == false) {
       int added = await db.insert(USER_TABLE, user.toUserTable());
       if (added > 0) {
@@ -91,13 +91,16 @@ class SQLHelper {
       } else {
         print('Not Added');
       }
+    } else {
+      print('Data Already existed');
     }
   }
 
   Future<bool> userAlreadyExistedOrNot({String? email, String? phone}) async {
     Database db = await getDB();
     List<Map<String, dynamic>> dataCheck = await db.query(USER_TABLE,
-        where: '$USER_EMAIL =? OR $USER_PHONE = ?', whereArgs: [email, phone]);
+        where: '$USER_EMAIL =? OR $USER_PHONE = ?',
+        whereArgs: ['${email}, ${phone}']);
     return dataCheck.isNotEmpty;
   }
 
@@ -107,12 +110,12 @@ class SQLHelper {
     Database db = await getDB();
     List<Map<String, dynamic>> emailPassword = await db.query(USER_TABLE,
         where: '$USER_EMAIL = ? and $USER_PASSWORD',
-        whereArgs: [email, password]);
+        whereArgs: ['$email, $password']);
 
     // set uid by sharedPrefs here
     if (emailPassword.isNotEmpty) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setInt('uid', emailPassword[0][USER_ID]);
+      prefs.setInt('uid', int.parse(emailPassword[0][USER_ID]));
     }
     //  done
     return emailPassword.isNotEmpty;
@@ -154,6 +157,7 @@ class SQLHelper {
   //   });
   // }
 
+  // with the support of SharedPreferences
   Future<List<Expanse>> fetchAllExpanses() async {
     Database db = await getDB();
     // get uid by SharedPreference method here, for its use further
@@ -161,11 +165,24 @@ class SQLHelper {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int? uid = prefs.getInt('uid');
     //
-    List<Map<String, dynamic>> listOfMaps =
-        await db.query(EXPANSE_TABLE, where: '$USER_ID = ?', whereArgs: [uid]);
+    List<Map<String, dynamic>> listOfMaps = await db
+        .query(EXPANSE_TABLE, where: '$USER_ID = ?', whereArgs: ["$uid"]);
     return List.generate(listOfMaps.length, (index) {
       Map<String, dynamic> eachMap = listOfMaps[index];
       return Expanse.fromMap(eachMap);
+    });
+  }
+
+  // Without the support of SharedPreferences//
+  // This method also require to change your Event, and State classes accordingly
+
+  Future<List<Expanse>> fetchAllExpansesOfUser(int uid) async {
+    Database db = await getDB();
+    List<Map<String, dynamic>> userBasedExp = await db
+        .query(EXPANSE_TABLE, where: '$USER_ID = ?', whereArgs: ["$uid"]);
+    return List.generate(userBasedExp.length, (index) {
+      Map<String, dynamic> eachUser = userBasedExp[index];
+      return Expanse.fromMap(eachUser);
     });
   }
 }

@@ -1,6 +1,9 @@
 import 'package:expanse_app_with_sqflite_bloc/database_helper.dart';
 import 'package:expanse_app_with_sqflite_bloc/first_page.dart';
 import 'package:expanse_app_with_sqflite_bloc/models/users_model.dart';
+import 'package:expanse_app_with_sqflite_bloc/my_widgets.dart';
+import 'package:expanse_app_with_sqflite_bloc/utils/color_constants.dart';
+import 'package:expanse_app_with_sqflite_bloc/utils/my_styles.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -22,6 +25,14 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Welcome',
+          style: mTextStyle34(
+            mWeight: FontWeight.bold,
+          ),
+        ),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           reverse: true,
@@ -30,6 +41,8 @@ class _LoginPageState extends State<LoginPage> {
             key: formKey,
             child: Column(
               children: [
+                hSpacer(),
+
                 /// for name saving ///
                 TextFormField(
                   decoration: const InputDecoration(
@@ -49,7 +62,8 @@ class _LoginPageState extends State<LoginPage> {
                   },
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                 ),
-                const SizedBox(height: 12),
+
+                hSpacer(),
 
                 /// for phone saving ///
                 TextFormField(
@@ -135,11 +149,12 @@ class _LoginPageState extends State<LoginPage> {
                   },
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                 ),
-                const SizedBox(height: 32),
-                ElevatedButton(
-                    onPressed: () async {
-                      try {
-                        if (formKey.currentState!.validate()) {
+                hSpacer(mHeight: 30),
+                CustomButton(
+                    titleWidget: const Text('Submit Detail'),
+                    onTap: () async {
+                      if (formKey.currentState!.validate()) {
+                        try {
                           //todo: login to sqflite
                           await databaseHelper
                               .addUser(Users(
@@ -155,13 +170,17 @@ class _LoginPageState extends State<LoginPage> {
                               return FirstPage();
                             }));
                           });
+                        } catch (e) {
+                          print(e);
                         }
-                      } catch (e) {
-                        print(e);
                       }
-                    },
-                    child: Text('Submit Details')),
-              ],
+                    }),
+              ].map((e) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: e,
+                );
+              }).toList(),
             ),
           ),
         ),
@@ -172,7 +191,7 @@ class _LoginPageState extends State<LoginPage> {
 
 extension ValidAlphabet on String {
   bool isValidAlphabet() {
-    return RegExp(r'^[a-zA-Z]+$').hasMatch(this);
+    return RegExp(r'^(([a-zA-Z\s]+)([a-zA-Z]+))$').hasMatch(this);
   }
 }
 
@@ -187,5 +206,18 @@ extension ValidEmail on String {
     return RegExp(
             r'^([a-zA-Z0-9]+)([-_.]*)([a-zA-Z0-9]*)([@])([a-zA-Z]{2,})([.])([a-zA-Z]{2,4})$')
         .hasMatch(this);
+  }
+}
+
+extension ValidAmount on String {
+  bool isValidAmount() {
+    return RegExp(r'^(([1-9][0-9]*[.]?[0-9]{0,2})||([0]?[.][0]?[1-9]{1,2}))$')
+        .hasMatch(this);
+  }
+}
+
+extension ValidDetail on String {
+  bool isValidDetail() {
+    return RegExp(r'^(([a-zA-Z0-9\s]*)([a-zA-Z0-9]+))$').hasMatch(this);
   }
 }
