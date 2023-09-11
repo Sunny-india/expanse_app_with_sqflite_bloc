@@ -77,8 +77,7 @@ class SQLHelper {
     print('EXPANSE table created here');
   }
 
-  /// for adding users in the database and have their id set through
-  /// SharedPreferences
+  /// for adding users in the database
   Future addUser(Users user) async {
     Database db = await getDB();
     bool checkExistence = await userAlreadyExistedOrNot(
@@ -87,13 +86,6 @@ class SQLHelper {
       int added = await db.insert(USER_TABLE, user.toUserTable());
       if (added > 0) {
         print(await db.query('users'));
-
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setBool('isLoggedIn', true);
-
-        ///
-        await prefs.setInt('uid', user.user_id!);
-        print(prefs.getInt('uid'));
       } else {
         print('Not Added');
       }
@@ -110,10 +102,11 @@ class SQLHelper {
     return dataCheck.isNotEmpty;
   }
 
-  // for sign up method
+  /// for sign up method and have their id set through SharedPreferences
   Future<bool> authenticateUser(
       {required String email, required String password}) async {
     Database db = await getDB();
+
     List<Map<String, dynamic>> emailPassword = await db.query(USER_TABLE,
         where: '$USER_EMAIL = ? and $USER_PASSWORD',
         whereArgs: ['$email, $password']);

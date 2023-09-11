@@ -1,8 +1,7 @@
-import 'package:expanse_app_with_sqflite_bloc/database_helper.dart';
+﻿import 'package:expanse_app_with_sqflite_bloc/database_helper.dart';
 import 'package:expanse_app_with_sqflite_bloc/first_page.dart';
 import 'package:expanse_app_with_sqflite_bloc/models/users_model.dart';
 import 'package:expanse_app_with_sqflite_bloc/my_widgets.dart';
-import 'package:expanse_app_with_sqflite_bloc/utils/color_constants.dart';
 import 'package:expanse_app_with_sqflite_bloc/utils/my_styles.dart';
 import 'package:flutter/material.dart';
 
