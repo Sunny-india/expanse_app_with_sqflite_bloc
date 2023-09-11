@@ -1,9 +1,14 @@
+import 'package:expanse_app_with_sqflite_bloc/blocs/expanse_event.dart';
 import 'package:expanse_app_with_sqflite_bloc/my_widgets.dart';
 import 'package:expanse_app_with_sqflite_bloc/utils/app_constants.dart';
 import 'package:expanse_app_with_sqflite_bloc/utils/my_styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'blocs/expanase_bloc.dart';
 import 'login_page.dart';
+import 'models/expanse_model.dart';
 
 class AddExpansePage extends StatefulWidget {
   const AddExpansePage({super.key});
@@ -193,7 +198,29 @@ class _AddExpansePageState extends State<AddExpansePage> {
                       children: [
                         Expanded(
                           child: CustomButton(
-                            functionInsideButton: () {},
+                            functionInsideButton: () async {
+                              SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                              int? userId = prefs.getInt('uid');
+                              context.read<ExpanseBloc>().add(AddExpanseEvent(
+                                      expanse: Expanse(
+                                    user_id: userId ??
+                                        AppConstants
+                                            .categories[selectedCategory]['id'],
+                                    expanse_title:
+                                        titleController.text.toString(),
+                                    expanse_desc:
+                                        descController.text.toString(),
+                                    expanse_amount: double.parse(
+                                        amountController.text.toString()),
+                                    expanse_type:
+                                        selectedItem == 'Debit' ? 0 : 1,
+                                    expanse_cat_id: AppConstants
+                                        .categories[selectedCategory]['id'],
+                                    expanse_time: '',
+                                    expanse_total: 0,
+                                  )));
+                            },
                             titleWidget: const Text('Enter'),
                           ),
                         ),

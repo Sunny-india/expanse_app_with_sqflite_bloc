@@ -39,148 +39,149 @@ class _LoginPageState extends State<LoginPage> {
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           child: Form(
             key: formKey,
-            child: Column(
-              children: [
-                hSpacer(),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                children: [
+                  hSpacer(),
 
-                /// for name saving ///
-                TextFormField(
-                  decoration: const InputDecoration(
-                    hintText: 'Enter name',
-                  ),
-                  controller: nameController,
-                  validator: (value) {
-                    if (value!.isNotEmpty) {
-                      if (value.isValidAlphabet() == true) {
-                        return null;
-                      } else {
-                        return 'Please Enter only alphabets';
-                      }
-                    } else {
-                      return 'Please enter your name';
-                    }
-                  },
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                ),
-
-                hSpacer(),
-
-                /// for phone saving ///
-                TextFormField(
-                  decoration:
-                      const InputDecoration(hintText: 'Enter Phone number'),
-                  controller: phoneController,
-                  validator: (value) {
-                    if (value!.isNotEmpty) {
-                      if (value.isValidNumber() == true) {
-                        return null;
-                      } else {
-                        return 'Please Enter only 10-digit number';
-                      }
-                    } else {
-                      return 'Please enter your phone';
-                    }
-                  },
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                ),
-                const SizedBox(height: 12),
-
-                /// for email saving ///
-                TextFormField(
-                  decoration: const InputDecoration(hintText: 'Enter email'),
-                  controller: emailController,
-                  validator: (value) {
-                    if (value!.isNotEmpty) {
-                      if (value.isValidEmail() == true) {
-                        return null;
-                      } else {
-                        return 'Please Enter valid email';
-                      }
-                    } else {
-                      return 'Please enter your email';
-                    }
-                  },
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                ),
-                const SizedBox(height: 12),
-
-                /// for password saving ///
-                TextFormField(
-                  controller: passwordController,
-                  obscureText: isTextObscured,
-                  decoration: InputDecoration(
-                    suffixIcon: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          isTextObscured = !isTextObscured;
-                        });
-                      },
-                      icon: const Icon(Icons.visibility),
+                  /// for name saving ///
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      hintText: 'Enter name',
                     ),
-                    hintText: 'Enter password',
+                    controller: nameController,
+                    validator: (value) {
+                      if (value != null && value.isNotEmpty) {
+                        if (value.isValidAlphabet() == true) {
+                          return null;
+                        } else {
+                          return 'Please Enter only alphabets';
+                        }
+                      } else {
+                        return 'Please enter your name';
+                      }
+                    },
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                   ),
-                  validator: (value) {
-                    if (value!.isNotEmpty) {
-                      return null;
-                    } else {
-                      return 'Please enter some password';
-                    }
-                  },
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                ),
-                const SizedBox(height: 12),
 
-                /// for city saving ///
-                TextFormField(
-                  decoration: const InputDecoration(
-                    hintText: 'Enter city name',
+                  hSpacer(),
+
+                  /// for phone saving ///
+                  TextFormField(
+                    decoration:
+                        const InputDecoration(hintText: 'Enter Phone number'),
+                    controller: phoneController,
+                    validator: (value) {
+                      if (value!.isNotEmpty) {
+                        if (value.isValidNumber() == true) {
+                          return null;
+                        } else {
+                          return 'Please Enter only 10-digit number';
+                        }
+                      } else {
+                        return 'Please enter your phone';
+                      }
+                    },
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                   ),
-                  controller: cityController,
-                  validator: (value) {
-                    if (value!.isNotEmpty) {
-                      if (value.isValidAlphabet() == true) {
+                  const SizedBox(height: 12),
+
+                  /// for email saving ///
+                  TextFormField(
+                    decoration: const InputDecoration(hintText: 'Enter email'),
+                    controller: emailController,
+                    validator: (value) {
+                      if (value!.isNotEmpty) {
+                        if (value.isValidEmail() == true) {
+                          return null;
+                        } else {
+                          return 'Please Enter valid email';
+                        }
+                      } else {
+                        return 'Please enter your email';
+                      }
+                    },
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                  ),
+                  const SizedBox(height: 12),
+
+                  /// for password saving ///
+                  TextFormField(
+                    controller: passwordController,
+                    obscureText: isTextObscured,
+                    decoration: InputDecoration(
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            isTextObscured = !isTextObscured;
+                          });
+                        },
+                        icon: const Icon(Icons.visibility),
+                      ),
+                      hintText: 'Enter password',
+                    ),
+                    validator: (value) {
+                      if (value!.isNotEmpty) {
                         return null;
                       } else {
-                        return 'Please Enter only alphabets';
+                        return 'Please enter some password';
                       }
-                    } else {
-                      return 'Please enter your city name';
-                    }
-                  },
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                ),
-                hSpacer(mHeight: 30),
-                CustomButton(
-                    titleWidget: const Text('Submit Detail'),
-                    functionInsideButton: () async {
-                      if (formKey.currentState!.validate()) {
-                        try {
-                          //todo: login to sqflite
-                          await databaseHelper
-                              .addUser(Users(
-                                  name: nameController.text.toString(),
-                                  phone: phoneController.text.toString(),
-                                  email: emailController.text.toString(),
-                                  password: passwordController.text.toString(),
-                                  city: cityController.text.toString()))
-                              .whenComplete(() async {
-                            formKey.currentState!.reset();
-                            await Navigator.pushReplacement(context,
-                                MaterialPageRoute(builder: (context) {
-                              return const FirstPage();
-                            }));
-                          });
-                        } catch (e) {
-                          print(e);
+                    },
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                  ),
+                  const SizedBox(height: 12),
+
+                  /// for city saving ///
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      hintText: 'Enter city name',
+                    ),
+                    controller: cityController,
+                    validator: (value) {
+                      if (value!.isNotEmpty) {
+                        if (value.isValidAlphabet() == true) {
+                          return null;
+                        } else {
+                          return 'Please Enter only alphabets';
                         }
+                      } else {
+                        return 'Please enter your city name';
                       }
-                    }),
-              ].map((e) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: e,
-                );
-              }).toList(),
+                    },
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                  ),
+                  hSpacer(mHeight: 30),
+
+                  /// for submitting this page's detail to database
+                  CustomButton(
+                      titleWidget: const Text('Submit Detail'),
+                      functionInsideButton: () async {
+                        if (formKey.currentState!.validate()) {
+                          try {
+                            //todo: login to sqflite
+                            await databaseHelper
+                                .addUser(Users(
+                                    name: nameController.text.toString(),
+                                    phone: phoneController.text.toString(),
+                                    email: emailController.text.toString(),
+                                    password:
+                                        passwordController.text.toString(),
+                                    city: cityController.text.toString()))
+                                .whenComplete(() async {
+                              formKey.currentState!.reset();
+                              await Navigator.pushReplacement(context,
+                                  MaterialPageRoute(builder: (context) {
+                                return const FirstPage();
+                              }));
+                            });
+                          } catch (e) {
+                            print(e);
+                          }
+                        }
+                      }),
+                ],
+              ),
             ),
           ),
         ),

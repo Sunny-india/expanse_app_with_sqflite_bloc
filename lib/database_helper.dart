@@ -77,6 +77,8 @@ class SQLHelper {
     print('EXPANSE table created here');
   }
 
+  /// for adding users in the database and have their id set through
+  /// SharedPreferences
   Future addUser(Users user) async {
     Database db = await getDB();
     bool checkExistence = await userAlreadyExistedOrNot(
@@ -88,6 +90,10 @@ class SQLHelper {
 
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setBool('isLoggedIn', true);
+
+        ///
+        await prefs.setInt('uid', user.user_id!);
+        print(prefs.getInt('uid'));
       } else {
         print('Not Added');
       }
@@ -100,7 +106,7 @@ class SQLHelper {
     Database db = await getDB();
     List<Map<String, dynamic>> dataCheck = await db.query(USER_TABLE,
         where: '$USER_EMAIL =? OR $USER_PHONE = ?',
-        whereArgs: ['${email}, ${phone}']);
+        whereArgs: ['$email, $phone']);
     return dataCheck.isNotEmpty;
   }
 
@@ -163,7 +169,7 @@ class SQLHelper {
     // get uid by SharedPreference method here, for its use further
     // in Bloc. set task has been done in users function.
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    int? uid = prefs.getInt('uid');
+    int uid = prefs.getInt('uid') as int;
     //
     List<Map<String, dynamic>> listOfMaps = await db
         .query(EXPANSE_TABLE, where: '$USER_ID = ?', whereArgs: ["$uid"]);
