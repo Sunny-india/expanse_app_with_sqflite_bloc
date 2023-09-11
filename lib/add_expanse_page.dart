@@ -1,3 +1,4 @@
+import 'package:expanse_app_with_sqflite_bloc/my_widgets.dart';
 import 'package:expanse_app_with_sqflite_bloc/utils/app_constants.dart';
 import 'package:expanse_app_with_sqflite_bloc/utils/my_styles.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,15 +16,16 @@ class _AddExpansePageState extends State<AddExpansePage> {
   TextEditingController titleController = TextEditingController();
   TextEditingController descController = TextEditingController();
   TextEditingController amountController = TextEditingController();
-
-  showBottomSheet() {
+  int selectedCategory = -1;
+  List<String> expanseNatureList = ['Debit', 'Credit'];
+  String selectedItem = 'Debit';
+  //
+  void showBottomSheet() {
     showModalBottomSheet(
         constraints:
             BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * .45),
         backgroundColor: CupertinoColors.activeOrange,
-        // shape: const CircleBorder(
-        //     side: BorderSide(
-        //         color: CupertinoColors.black, width: 3)),
+        shape: const BeveledRectangleBorder(),
         context: context,
         builder: (context) {
           return Container(
@@ -35,16 +37,25 @@ class _AddExpansePageState extends State<AddExpansePage> {
                 itemBuilder: (context, index) {
                   Map<String, dynamic> inSideCategoryMap =
                       AppConstants.categories[index];
-                  return Column(
-                    children: [
-                      Image.asset(
-                        inSideCategoryMap['imagepath'],
-                        width: 50,
-                        height: 50,
-                      ),
-                      hSpacer(mHeight: 4),
-                      Text(inSideCategoryMap['name']),
-                    ],
+                  return InkWell(
+                    onTap: () {
+                      setState(() {
+                        selectedCategory = index;
+                      });
+                      print(selectedCategory);
+                      Navigator.pop(context);
+                    },
+                    child: Column(
+                      children: [
+                        Image.asset(
+                          inSideCategoryMap['imagepath'],
+                          width: 50,
+                          height: 50,
+                        ),
+                        hSpacer(mHeight: 4),
+                        Text(inSideCategoryMap['name']),
+                      ],
+                    ),
                   );
                 }),
           );
@@ -131,24 +142,61 @@ class _AddExpansePageState extends State<AddExpansePage> {
                     ),
                     hSpacer(mHeight: 50),
 
-                    /// button for entries
                     Row(
                       children: [
+                        /// button for categories
                         Expanded(
-                          flex: 1,
-                          child: ElevatedButton(
-                            onPressed: showBottomSheet,
-                            child: const Text('Categories'),
-                          ),
+                          flex: 2,
+                          child: CustomButton(
+                              titleWidget: selectedCategory < 0
+                                  ? const Text('Categories')
+                                  : Row(
+                                      children: [
+                                        Text(AppConstants
+                                                .categories[selectedCategory]
+                                            ['name']),
+                                        wSpacer(mWidth: 4),
+                                        Expanded(
+                                          child: Image.asset(
+                                            AppConstants.categories[
+                                                selectedCategory]['imagepath'],
+                                            width: 30,
+                                            height: 30,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                              functionInsideButton: showBottomSheet),
                         ),
                         wSpacer(),
                         Expanded(
                           flex: 1,
-                          child: ElevatedButton(
-                            onPressed: () {},
-                            child: const Text('Enter'),
+                          child: DropdownButton(
+                              items: expanseNatureList
+                                  .map((e) => DropdownMenuItem(
+                                        value: e,
+                                        child: Text(e),
+                                      ))
+                                  .toList(),
+                              onChanged: (String? newValue) {
+                                selectedItem = newValue!;
+                                setState(() {});
+                              },
+                              value: selectedItem),
+                        ),
+                      ],
+                    ),
+                    hSpacer(mHeight: 25),
+
+                    /// button for entries
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CustomButton(
+                            functionInsideButton: () {},
+                            titleWidget: const Text('Enter'),
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ],

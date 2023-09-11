@@ -40,6 +40,12 @@ class Utils {
       floatingActionButtonTheme: FloatingActionButtonThemeData(
           backgroundColor: Colors.lightBlue.withOpacity(.34),
           foregroundColor: Colors.indigo),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+            backgroundColor: CupertinoColors.systemTeal,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20))),
+      ),
     );
   }
 

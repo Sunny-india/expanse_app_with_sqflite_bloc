@@ -5,16 +5,15 @@ class CustomButton extends StatelessWidget {
   const CustomButton(
       {super.key,
       required this.titleWidget,
-      required this.onTap,
+      required this.functionInsideButton,
       this.bgColor = ColorConstants.mainBlackColor});
   final Widget titleWidget;
-  final VoidCallback onTap;
+  final VoidCallback functionInsideButton;
   final Color bgColor;
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      style: ElevatedButton.styleFrom(backgroundColor: bgColor),
-      onPressed: onTap,
+      onPressed: functionInsideButton,
       child: titleWidget,
     );
   }

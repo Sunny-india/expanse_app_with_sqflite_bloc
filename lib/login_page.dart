@@ -115,7 +115,7 @@ class _LoginPageState extends State<LoginPage> {
                           isTextObscured = !isTextObscured;
                         });
                       },
-                      icon: Icon(Icons.visibility),
+                      icon: const Icon(Icons.visibility),
                     ),
                     hintText: 'Enter password',
                   ),
@@ -152,7 +152,7 @@ class _LoginPageState extends State<LoginPage> {
                 hSpacer(mHeight: 30),
                 CustomButton(
                     titleWidget: const Text('Submit Detail'),
-                    onTap: () async {
+                    functionInsideButton: () async {
                       if (formKey.currentState!.validate()) {
                         try {
                           //todo: login to sqflite
@@ -167,7 +167,7 @@ class _LoginPageState extends State<LoginPage> {
                             formKey.currentState!.reset();
                             await Navigator.pushReplacement(context,
                                 MaterialPageRoute(builder: (context) {
-                              return FirstPage();
+                              return const FirstPage();
                             }));
                           });
                         } catch (e) {
