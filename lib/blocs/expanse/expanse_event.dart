@@ -1,4 +1,4 @@
-import '../models/expanse_model.dart';
+import '../../models/expanse_model.dart';
 
 abstract class ExpanseEvent {}
 

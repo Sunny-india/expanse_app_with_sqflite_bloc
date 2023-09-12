@@ -8,13 +8,13 @@ class Utils {
     return ThemeData(
       scaffoldBackgroundColor: ColorConstants.mainGreyColor,
       appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          titleTextStyle: TextStyle(
-            color: ColorConstants.mainBlackColor,
-            fontSize: 18,
-          ),
-          centerTitle: false),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        titleTextStyle: TextStyle(
+          color: ColorConstants.mainBlackColor,
+          fontSize: 18,
+        ),
+      ),
       inputDecorationTheme: InputDecorationTheme(
         focusedBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: CupertinoColors.destructiveRed)),

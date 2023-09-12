@@ -1,9 +1,9 @@
-import 'package:expanse_app_with_sqflite_bloc/blocs/expanse_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../database_helper.dart';
-import '../models/expanse_model.dart';
+import '../../database_helper.dart';
+import '../../models/expanse_model.dart';
 import 'expanse_event.dart';
+import 'expanse_state.dart';
 
 class ExpanseBloc extends Bloc<ExpanseEvent, ExpanseState> {
   SQLHelper db;

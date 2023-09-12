@@ -1,13 +1,13 @@
-import 'package:expanse_app_with_sqflite_bloc/blocs/expanse_event.dart';
 import 'package:expanse_app_with_sqflite_bloc/my_widgets.dart';
+import 'package:expanse_app_with_sqflite_bloc/sign_up_page.dart';
 import 'package:expanse_app_with_sqflite_bloc/utils/app_constants.dart';
 import 'package:expanse_app_with_sqflite_bloc/utils/my_styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'blocs/expanase_bloc.dart';
-import 'login_page.dart';
+import 'blocs/expanse/expanase_bloc.dart';
+import 'blocs/expanse/expanse_event.dart';
 import 'models/expanse_model.dart';
 
 class AddExpansePage extends StatefulWidget {
@@ -47,7 +47,7 @@ class _AddExpansePageState extends State<AddExpansePage> {
                       setState(() {
                         selectedCategory = index;
                       });
-                      print(selectedCategory);
+                      //print(selectedCategory);
                       Navigator.pop(context);
                     },
                     child: Column(

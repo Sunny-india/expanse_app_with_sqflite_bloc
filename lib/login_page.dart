@@ -1,9 +1,14 @@
-﻿import 'package:expanse_app_with_sqflite_bloc/database_helper.dart';
+﻿import 'package:expanse_app_with_sqflite_bloc/blocs/users/users_bloc.dart';
+import 'package:expanse_app_with_sqflite_bloc/blocs/users/users_event.dart';
+import 'package:expanse_app_with_sqflite_bloc/database_helper.dart';
 import 'package:expanse_app_with_sqflite_bloc/first_page.dart';
 import 'package:expanse_app_with_sqflite_bloc/models/users_model.dart';
 import 'package:expanse_app_with_sqflite_bloc/my_widgets.dart';
+import 'package:expanse_app_with_sqflite_bloc/sign_up_page.dart';
 import 'package:expanse_app_with_sqflite_bloc/utils/my_styles.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -21,13 +26,15 @@ class _LoginPageState extends State<LoginPage> {
   bool isTextObscured = true;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   SQLHelper databaseHelper = SQLHelper.singleInstance;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text(
           'Welcome',
-          style: mTextStyle34(
+          style: mTextStyle25(
             mWeight: FontWeight.bold,
           ),
         ),
@@ -38,52 +45,39 @@ class _LoginPageState extends State<LoginPage> {
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           child: Form(
             key: formKey,
-            child: Padding(
+            child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              height: MediaQuery.sizeOf(context).height,
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   hSpacer(),
-
-                  /// for name saving ///
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      hintText: 'Enter name',
-                    ),
-                    controller: nameController,
-                    validator: (value) {
-                      if (value != null && value.isNotEmpty) {
-                        if (value.isValidAlphabet() == true) {
-                          return null;
-                        } else {
-                          return 'Please Enter only alphabets';
-                        }
-                      } else {
-                        return 'Please enter your name';
-                      }
-                    },
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                  Text(
+                    'Please Login',
+                    style: mTextStyle25(
+                        mColor: CupertinoColors.systemRed,
+                        mWeight: FontWeight.w900),
                   ),
-
                   hSpacer(),
 
                   /// for phone saving ///
-                  TextFormField(
-                    decoration:
-                        const InputDecoration(hintText: 'Enter Phone number'),
-                    controller: phoneController,
-                    validator: (value) {
-                      if (value!.isNotEmpty) {
-                        if (value.isValidNumber() == true) {
-                          return null;
-                        } else {
-                          return 'Please Enter only 10-digit number';
-                        }
-                      } else {
-                        return 'Please enter your phone';
-                      }
-                    },
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                  ),
+                  // TextFormField(
+                  //   decoration:
+                  //       const InputDecoration(hintText: 'Enter Phone number'),
+                  //   controller: phoneController,
+                  //   validator: (value) {
+                  //     if (value!.isNotEmpty) {
+                  //       if (value.isValidNumber() == true) {
+                  //         return null;
+                  //       } else {
+                  //         return 'Please Enter only 10-digit number';
+                  //       }
+                  //     } else {
+                  //       return 'Please enter your phone';
+                  //     }
+                  //   },
+                  //   autovalidateMode: AutovalidateMode.onUserInteraction,
+                  // ),
                   const SizedBox(height: 12),
 
                   /// for email saving ///
@@ -131,54 +125,40 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   const SizedBox(height: 12),
 
-                  /// for city saving ///
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      hintText: 'Enter city name',
-                    ),
-                    controller: cityController,
-                    validator: (value) {
-                      if (value!.isNotEmpty) {
-                        if (value.isValidAlphabet() == true) {
-                          return null;
-                        } else {
-                          return 'Please Enter only alphabets';
-                        }
-                      } else {
-                        return 'Please enter your city name';
-                      }
-                    },
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                  ),
                   hSpacer(mHeight: 30),
 
                   /// for submitting this page's detail to database
                   CustomButton(
-                      titleWidget: const Text('Submit Detail'),
-                      functionInsideButton: () async {
-                        if (formKey.currentState!.validate()) {
-                          try {
-                            //todo: login to sqflite
-                            await databaseHelper
-                                .addUser(Users(
-                                    name: nameController.text.toString(),
-                                    phone: phoneController.text.toString(),
-                                    email: emailController.text.toString(),
-                                    password:
-                                        passwordController.text.toString(),
-                                    city: cityController.text.toString()))
-                                .whenComplete(() async {
-                              formKey.currentState!.reset();
-                              await Navigator.pushReplacement(context,
-                                  MaterialPageRoute(builder: (context) {
-                                return const FirstPage();
-                              }));
-                            });
-                          } catch (e) {
-                            print(e);
-                          }
-                        }
-                      }),
+                    buttonWidth: MediaQuery.sizeOf(context).width * .6,
+                    buttonHeight: 40,
+                    titleWidget: const Text('Login'),
+                    functionInsideButton: () async {
+                      if (formKey.currentState!.validate()) {
+                        // try {
+                        //   //todo: login to sqflite
+                        //   await databaseHelper
+                        //       .addUser(Users(
+                        //           name: nameController.text.toString(),
+                        //           phone: phoneController.text.toString(),
+                        //           email: emailController.text.toString(),
+                        //           password: passwordController.text.toString(),
+                        //           city: cityController.text.toString()))
+                        //       .whenComplete(() async {
+                        //     formKey.currentState!.reset();
+                        //     await Navigator.pushReplacement(context,
+                        //         MaterialPageRoute(builder: (context) {
+                        //       return const FirstPage();
+                        //     }));
+                        //   });
+                        // } catch (e) {
+                        //   print(e);
+                        // }
+                        context.read<UserBloc>().add(AuthenticateUserEvent(
+                            email: emailController.text.toString(),
+                            password: passwordController.text.toString()));
+                      }
+                    },
+                  ),
                 ],
               ),
             ),
@@ -186,38 +166,5 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
-  }
-}
-
-extension ValidAlphabet on String {
-  bool isValidAlphabet() {
-    return RegExp(r'^(([a-zA-Z\s]+)([a-zA-Z]+))$').hasMatch(this);
-  }
-}
-
-extension ValidNumber on String {
-  bool isValidNumber() {
-    return RegExp(r'^[0-9]{10}$').hasMatch(this);
-  }
-}
-
-extension ValidEmail on String {
-  bool isValidEmail() {
-    return RegExp(
-            r'^([a-zA-Z0-9]+)([-_.]*)([a-zA-Z0-9]*)([@])([a-zA-Z]{2,})([.])([a-zA-Z]{2,4})$')
-        .hasMatch(this);
-  }
-}
-
-extension ValidAmount on String {
-  bool isValidAmount() {
-    return RegExp(r'^(([1-9][0-9]*[.]?[0-9]{0,2})||([0]?[.][0]?[1-9]{1,2}))$')
-        .hasMatch(this);
-  }
-}
-
-extension ValidDetail on String {
-  bool isValidDetail() {
-    return RegExp(r'^(([a-zA-Z0-9\s]*)([a-zA-Z0-9]+))$').hasMatch(this);
   }
 }

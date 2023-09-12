@@ -78,7 +78,7 @@ class SQLHelper {
   }
 
   /// for adding users in the database
-  Future addUser(Users user) async {
+  Future<bool> addUser(Users user) async {
     Database db = await getDB();
     bool checkExistence = await userAlreadyExistedOrNot(
         email: user.email.toString(), phone: user.phone.toString());
@@ -86,11 +86,14 @@ class SQLHelper {
       int added = await db.insert(USER_TABLE, user.toUserTable());
       if (added > 0) {
         print(await db.query('users'));
+        return true;
       } else {
         print('Not Added');
+        return false;
       }
     } else {
       print('Data Already existed');
+      return false;
     }
   }
 
@@ -107,17 +110,26 @@ class SQLHelper {
       {required String email, required String password}) async {
     Database db = await getDB();
 
-    List<Map<String, dynamic>> emailPassword = await db.query(USER_TABLE,
+    List<Map<String, dynamic>> emailPasswordFound = await db.query(USER_TABLE,
         where: '$USER_EMAIL = ? and $USER_PASSWORD',
         whereArgs: ['$email, $password']);
 
-    // set uid by sharedPrefs here
-    if (emailPassword.isNotEmpty) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setInt('uid', int.parse(emailPassword[0][USER_ID]));
+    if (emailPasswordFound.isNotEmpty) {
+      return true;
+    } else {
+      return false;
     }
-    //  done
-    return emailPassword.isNotEmpty;
+
+    // set uid by sharedPrefs here
+    // if (emailPassword.isNotEmpty) {
+    //   SharedPreferences prefs = await SharedPreferences.getInstance();
+    //   prefs.setInt('uid', int.parse(emailPassword[0][USER_ID]));
+    //   return true;
+    // } else {
+    //   return false;
+    // }
+    //
+    // //return emailPassword.isNotEmpty;
   }
 
   Future<List<Users>> fetchUsers() async {
