@@ -1,8 +1,8 @@
-﻿import 'package:expanse_app_with_sqflite_bloc/blocs/users/users_bloc.dart';
+﻿import 'package:expanse_app_with_sqflite_bloc/add_expanse_page.dart';
+import 'package:expanse_app_with_sqflite_bloc/blocs/users/uers_state.dart';
+import 'package:expanse_app_with_sqflite_bloc/blocs/users/users_bloc.dart';
 import 'package:expanse_app_with_sqflite_bloc/blocs/users/users_event.dart';
 import 'package:expanse_app_with_sqflite_bloc/database_helper.dart';
-import 'package:expanse_app_with_sqflite_bloc/first_page.dart';
-import 'package:expanse_app_with_sqflite_bloc/models/users_model.dart';
 import 'package:expanse_app_with_sqflite_bloc/my_widgets.dart';
 import 'package:expanse_app_with_sqflite_bloc/sign_up_page.dart';
 import 'package:expanse_app_with_sqflite_bloc/utils/my_styles.dart';
@@ -127,37 +127,32 @@ class _LoginPageState extends State<LoginPage> {
 
                   hSpacer(mHeight: 30),
 
-                  /// for submitting this page's detail to database
-                  CustomButton(
-                    buttonWidth: MediaQuery.sizeOf(context).width * .6,
-                    buttonHeight: 40,
-                    titleWidget: const Text('Login'),
-                    functionInsideButton: () async {
-                      if (formKey.currentState!.validate()) {
-                        // try {
-                        //   //todo: login to sqflite
-                        //   await databaseHelper
-                        //       .addUser(Users(
-                        //           name: nameController.text.toString(),
-                        //           phone: phoneController.text.toString(),
-                        //           email: emailController.text.toString(),
-                        //           password: passwordController.text.toString(),
-                        //           city: cityController.text.toString()))
-                        //       .whenComplete(() async {
-                        //     formKey.currentState!.reset();
-                        //     await Navigator.pushReplacement(context,
-                        //         MaterialPageRoute(builder: (context) {
-                        //       return const FirstPage();
-                        //     }));
-                        //   });
-                        // } catch (e) {
-                        //   print(e);
-                        // }
-                        context.read<UserBloc>().add(AuthenticateUserEvent(
-                            email: emailController.text.toString(),
-                            password: passwordController.text.toString()));
+                  /// for checking if the user exists in database or not
+                  /// further with the value got from the state
+                  /// how to route the user to the next page?
+                  BlocListener<UserBloc, UsersState>(
+                    listener: (context, state) {
+                      if (state is UserLoadedState) {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) {
+                            return const AddExpansePage();
+                          }),
+                        );
                       }
                     },
+                    child: CustomButton(
+                      buttonWidth: MediaQuery.sizeOf(context).width * .6,
+                      buttonHeight: 40,
+                      titleWidget: const Text('Login'),
+                      functionInsideButton: () async {
+                        if (formKey.currentState!.validate()) {
+                          context.read<UserBloc>().add(AuthenticateUserEvent(
+                              email: emailController.text.toString(),
+                              password: passwordController.text.toString()));
+                        }
+                      },
+                    ),
                   ),
                 ],
               ),

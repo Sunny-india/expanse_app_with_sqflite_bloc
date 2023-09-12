@@ -106,19 +106,17 @@ class SQLHelper {
   }
 
   /// for sign up method and have their id set through SharedPreferences
-  Future<bool> authenticateUser(
+  Future<List<Users>> authenticateUser(
       {required String email, required String password}) async {
     Database db = await getDB();
 
     List<Map<String, dynamic>> emailPasswordFound = await db.query(USER_TABLE,
-        where: '$USER_EMAIL = ? and $USER_PASSWORD',
+        where: '$USER_EMAIL = ? and $USER_PASSWORD=?',
         whereArgs: ['$email, $password']);
-
-    if (emailPasswordFound.isNotEmpty) {
-      return true;
-    } else {
-      return false;
-    }
+    return List.generate(emailPasswordFound.length, (index) {
+      Map<String, dynamic> innerMaps = emailPasswordFound[index];
+      return Users.fromUserTable(innerMaps);
+    });
 
     // set uid by sharedPrefs here
     // if (emailPassword.isNotEmpty) {

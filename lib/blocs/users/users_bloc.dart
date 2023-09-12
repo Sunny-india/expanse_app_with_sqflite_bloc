@@ -19,12 +19,16 @@ class UserBloc extends Bloc<UsersEvent, UsersState> {
       }
     });
 
-    ///===for authentication or loging===///
+    ///===for authentication or login===///
     on<AuthenticateUserEvent>((event, emit) async {
-      bool userFoundOrNot = await db.authenticateUser(
+      List<Users> userFoundOrNot = await db.authenticateUser(
           email: event.email, password: event.password);
-
-      emit(AuthenticateUserState(foundOrNot: userFoundOrNot));
+      if (userFoundOrNot.isNotEmpty) {
+        emit(UserLoadedState(users: userFoundOrNot));
+      } else {
+        emit(
+            UserErrorState(errorMessage: 'User carrying this email Not Found'));
+      }
     });
   }
 }
