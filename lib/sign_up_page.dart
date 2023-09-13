@@ -1,3 +1,4 @@
+import 'package:expanse_app_with_sqflite_bloc/blocs/users/uers_state.dart';
 import 'package:expanse_app_with_sqflite_bloc/blocs/users/users_bloc.dart';
 import 'package:expanse_app_with_sqflite_bloc/blocs/users/users_event.dart';
 import 'package:expanse_app_with_sqflite_bloc/database_helper.dart';
@@ -163,49 +164,37 @@ class _SignUpPageState extends State<SignUpPage> {
                     hSpacer(mHeight: 30),
 
                     /// for submitting this page's detail to database
-                    CustomButton(
-                        titleWidget: const Text('Submit Detail'),
-                        functionInsideButton: () async {
-                          // if (formKey.currentState!.validate()) {
-                          //   // try {
-                          //   //   //todo: login to sqflite
-                          //   //   await dbHelper
-                          //   //       .addUser(Users(
-                          //   //           name: nameController.text.toString(),
-                          //   //           phone: phoneController.text.toString(),
-                          //   //           email: emailController.text.toString(),
-                          //   //           password: passwordController.text.toString(),
-                          //   //           city: cityController.text.toString()))
-                          //   //       .whenComplete(() async {
-                          //   //     formKey.currentState!.reset();
-                          //   //     await Navigator.pushReplacement(context,
-                          //   //         MaterialPageRoute(builder: (context) {
-                          //   //       return const FirstPage();
-                          //   //     }));
-                          //   //   });
-                          //   // } catch (e) {
-                          //   //   print(e);
-                          //   // }
-                          // }
-                          if (formKey.currentState!.validate()) {
-                            context.read<UserBloc>().add(
-                                  AddUsersEvent(
-                                    user: Users(
-                                      name: nameController.text.toString(),
-                                      phone: phoneController.text.toString(),
-                                      email: emailController.text.toString(),
-                                      password:
-                                          passwordController.text.toString(),
-                                      city: cityController.text.toString(),
+                    BlocListener<UserBloc, UsersState>(
+                      listener: (context, state) {
+                        if (state is UserLoadedState) {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return const LoginPage();
+                          }));
+                        } else if (state is UserErrorState) {
+                          ScaffoldMessenger(
+                              child: Text(state.errorMessage.toString()));
+                        }
+                      },
+                      child: CustomButton(
+                          titleWidget: const Text('Submit Detail'),
+                          functionInsideButton: () async {
+                            if (formKey.currentState!.validate()) {
+                              context.read<UserBloc>().add(
+                                    AddUsersEvent(
+                                      user: Users(
+                                        name: nameController.text.toString(),
+                                        phone: phoneController.text.toString(),
+                                        email: emailController.text.toString(),
+                                        password:
+                                            passwordController.text.toString(),
+                                        city: cityController.text.toString(),
+                                      ),
                                     ),
-                                  ),
-                                );
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context) {
-                              return const LoginPage();
-                            }));
-                          }
-                        })
+                                  );
+                            }
+                          }),
+                    )
                   ],
                 ),
               ),

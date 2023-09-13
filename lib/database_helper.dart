@@ -82,7 +82,26 @@ class SQLHelper {
     Database db = await getDB();
     bool checkExistence = await userAlreadyExistedOrNot(
         email: user.email.toString(), phone: user.phone.toString());
-    if (checkExistence == false) {
+
+    // brings true or false based on check.
+    // false bool from check method meaning user does not exist, so add it here
+    ///
+
+    if (checkExistence) {
+      int added = await db.insert(USER_TABLE, user.toUserTable());
+      // now if the data is added, we again return true or false;
+      if (added > 0) {
+        return true;
+      } else {
+        print('a call for user existence from database');
+        return false;
+      }
+    } else {
+      return false;
+    }
+
+    /* if (checkExistence == false) {
+
       int added = await db.insert(USER_TABLE, user.toUserTable());
       if (added > 0) {
         print(await db.query('users'));
@@ -94,15 +113,23 @@ class SQLHelper {
     } else {
       print('Data Already existed');
       return false;
-    }
+    }*/
   }
 
   Future<bool> userAlreadyExistedOrNot({String? email, String? phone}) async {
     Database db = await getDB();
     List<Map<String, dynamic>> dataCheck = await db.query(USER_TABLE,
-        where: '$USER_EMAIL =? OR $USER_PHONE = ?',
-        whereArgs: ['$email, $phone']);
-    return dataCheck.isNotEmpty;
+        where: '$USER_EMAIL = ? OR $USER_PHONE = ?',
+        whereArgs: ['$email', '$phone']);
+    if (dataCheck.isEmpty) {
+      // means user does not exist so instead of returning false
+      // we would send true; Because we want further operations based on true
+      // true means green go for further functioning
+      return true;
+    } else {
+      // user exists.
+      return false;
+    }
   }
 
   /// for sign up method and have their id set through SharedPreferences
@@ -112,7 +139,7 @@ class SQLHelper {
 
     List<Map<String, dynamic>> emailPasswordFound = await db.query(USER_TABLE,
         where: '$USER_EMAIL = ? and $USER_PASSWORD=?',
-        whereArgs: ['$email, $password']);
+        whereArgs: ['$email,' '$password']);
     return List.generate(emailPasswordFound.length, (index) {
       Map<String, dynamic> innerMaps = emailPasswordFound[index];
       return Users.fromUserTable(innerMaps);
