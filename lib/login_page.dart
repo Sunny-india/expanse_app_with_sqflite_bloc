@@ -140,6 +140,15 @@ class _LoginPageState extends State<LoginPage> {
                           }),
                         );
                       }
+                      if (state is UserErrorState) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              state.errorMessage.toString(),
+                            ),
+                          ),
+                        );
+                      }
                     },
                     child: CustomButton(
                       buttonWidth: MediaQuery.sizeOf(context).width * .6,

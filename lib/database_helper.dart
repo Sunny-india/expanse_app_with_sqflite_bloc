@@ -138,7 +138,7 @@ class SQLHelper {
     Database db = await getDB();
 
     List<Map<String, dynamic>> emailPasswordFound = await db.query(USER_TABLE,
-        where: '$USER_EMAIL = ? and $USER_PASSWORD=?',
+        where: '$USER_EMAIL = ? and $USER_PASSWORD = ? ',
         whereArgs: ['$email,' '$password']);
     return List.generate(emailPasswordFound.length, (index) {
       Map<String, dynamic> innerMaps = emailPasswordFound[index];

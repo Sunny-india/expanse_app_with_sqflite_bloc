@@ -177,7 +177,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         }
                       },
                       child: CustomButton(
-                          titleWidget: const Text('Submit Detail'),
+                          titleWidget: const Text('Submit'),
                           functionInsideButton: () async {
                             if (formKey.currentState!.validate()) {
                               context.read<UserBloc>().add(
