@@ -139,7 +139,7 @@ class SQLHelper {
 
     List<Map<String, dynamic>> emailPasswordFound = await db.query(USER_TABLE,
         where: '$USER_EMAIL = ? and $USER_PASSWORD = ? ',
-        whereArgs: ['$email,' '$password']);
+        whereArgs: [email, password]);
     return List.generate(emailPasswordFound.length, (index) {
       Map<String, dynamic> innerMaps = emailPasswordFound[index];
       return Users.fromUserTable(innerMaps);
